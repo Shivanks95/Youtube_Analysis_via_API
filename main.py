@@ -1,15 +1,13 @@
 from googleapiclient.discovery import build
 import pandas as pd
-import seaborn as sns
-import openpyxl
 
 
 api_key = 'AIzaSyAV8jYStWCSe6hM1qXk9rHs1Z6km0InkQU'
 #channel_id = 'UCNU_lfiiWBdtULKOw6X0Dig'
 channel_ids = ['UCNU_lfiiWBdtULKOw6X0Dig', #Krish Naik
              'UC59K-uG2A5ogwIrHw4bmlEg', #Telusko
-              'UCkGS_3D0HEzfflFnG0bD24A', #My Sirji
-             'UCb1GdqUqArXMQ3RS86lqqOw'] #iNeuron channel
+              'UCkGS_3D0HEzfflFnG0bD24A', #MySirG.com
+             'UCb1GdqUqArXMQ3RS86lqqOw'] #iNeuron Intelligence
 
 youtube = build('youtube', 'v3', developerKey=api_key)
 
@@ -33,11 +31,8 @@ def get_channel_stats(youtube, channel_ids):
 
     return all_data
 
-
-channel_Details = get_channel_stats(youtube,channel_ids)
-
-all_data = pd.DataFrame(channel_Details)
-
+Channel_data = get_channel_stats(youtube,channel_ids)
+Ch_data = pd.DataFrame(Channel_data)
 
 #def get_videos_ids(youtube,playlist_id):
 
@@ -45,7 +40,7 @@ channel_statistics= get_channel_stats(youtube,channel_ids)
 
 channel_data = pd.DataFrame(channel_statistics)
 
-playlist_id = channel_data.loc[channel_data['channel_Name'] == 'Telusko', 'playlist_id'].iloc[0]
+playlist_id = channel_data.loc[channel_data['channel_Name']=='Telusko', 'playlist_id'].iloc[0]
 
 def get_videos_ids(youtube, playlist_id):
     request = youtube.playlistItems().list(
@@ -82,11 +77,8 @@ def get_videos_ids(youtube, playlist_id):
 
     return videos_ids
 
-video_id = get_videos_ids(youtube,playlist_id)
-
-video_ids = pd.DataFrame(video_id)
-
-
+video_ids = get_videos_ids(youtube,playlist_id)
+video_ids_data = pd.DataFrame(video_ids)
 
 
 #Function To get Video Details
@@ -96,33 +88,38 @@ def get_video_details(youtube, video_ids):
 
     for i in range(0, len(video_ids), 50):
         request = youtube.videos().list(
-                        part='snippet,statistics',
-                        id= ','.join(map(str, video_ids[i:i + 50])))
+            part='snippet,statistics',
+            id=','.join(video_ids[i:i + 50]))
         response = request.execute()
 
-
-
         for video in response['items']:
-                video_stats = dict(Title=video['snippet']['title'],
-                                    Published_date=video['snippet']['publishedAt'],
-                                    Views=video['statistics']['viewCount'],
-                                    Likes=video['statistics']['likeCount'],
-                                    Comments=video['statistics']['commentCount']
-                                    )
+            video_stats = dict(Title=video['snippet']['title'],
+                               Publised_date=video['snippet']['publishedAt'],
+                               Views=video['statistics']['viewCount'],
+                               Likes=video['statistics']['likeCount'],
+                               Comments=video['statistics']['commentCount']
+                               )
 
-                all_video_stats.append(video_stats)
+            all_video_stats.append(video_stats)
 
     return all_video_stats
 
-video_details = get_video_details(youtube, video_ids)
+video_details=get_video_details(youtube, video_ids)
 
 video_data = pd.DataFrame(video_details)
 
+video_data['Publised_date'] = pd.to_datetime(video_data['Publised_date']).dt.date
+video_data['Views'] = pd.to_numeric(video_data['Views'])
+video_data['Likes'] = pd.to_numeric(video_data['Likes'])
+video_data['Comments'] = pd.to_numeric(video_data['Comments'])
+
 
 video_data.to_csv('Video_Details(Output_Telusko).csv')
+video_data.to_excel('Video_Details(Output_Telusko).xlsx')
 
-all_data.to_csv('Video_Analysis(Output).csv')
-all_data.to_excel('Video_Analysis(Output).xlsx')
+Ch_data.to_csv('Video_Analysis(Output).csv')
+Ch_data.to_excel('Video_Analysis(Output).xlsx')
 
-video_ids.to_csv('Video_Ids(Output).csv')
-video_ids.to_excel('Video_Ids(Output).xlsx')
+video_ids_data.to_csv('Video_Ids(Output).csv')
+video_ids_data.to_excel('Video_Ids(Output).xlsx')
+
