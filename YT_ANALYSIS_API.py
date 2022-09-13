@@ -6,8 +6,8 @@ api_key = 'AIzaSyAV8jYStWCSe6hM1qXk9rHs1Z6km0InkQU'
 #channel_id = 'UCNU_lfiiWBdtULKOw6X0Dig'
 channel_ids = ['UCNU_lfiiWBdtULKOw6X0Dig', #Krish Naik
              'UC59K-uG2A5ogwIrHw4bmlEg', #Telusko
-              'UCkGS_3D0HEzfflFnG0bD24A', #My Sirji
-             'UCb1GdqUqArXMQ3RS86lqqOw'] #iNeuron channel
+              'UCkGS_3D0HEzfflFnG0bD24A', #MySirG.com
+             'UCb1GdqUqArXMQ3RS86lqqOw'] #iNeuron Intelligence
 
 youtube = build('youtube', 'v3', developerKey=api_key)
 
@@ -31,7 +31,8 @@ def get_channel_stats(youtube, channel_ids):
 
     return all_data
 
-get_channel_stats(youtube,channel_ids)
+Channel_data = get_channel_stats(youtube,channel_ids)
+Ch_data = pd.DataFrame(Channel_data)
 
 #def get_videos_ids(youtube,playlist_id):
 
@@ -77,7 +78,7 @@ def get_videos_ids(youtube, playlist_id):
     return videos_ids
 
 video_ids = get_videos_ids(youtube,playlist_id)
-
+video_ids_data = pd.DataFrame(video_ids)
 
 
 #Function To get Video Details
@@ -113,4 +114,11 @@ video_data['Likes'] = pd.to_numeric(video_data['Likes'])
 video_data['Comments'] = pd.to_numeric(video_data['Comments'])
 
 
-video_data.to_csv('Video_Details(Telusko).csv')
+video_data.to_csv('Video_Details(Output_Telusko).csv')
+video_data.to_excel('Video_Details(Output_Telusko).xlsx')
+
+Ch_data.to_csv('Video_Analysis(Output).csv')
+Ch_data.to_excel('Video_Analysis(Output).xlsx')
+
+video_ids_data.to_csv('Video_Ids(Output).csv')
+video_ids_data.to_excel('Video_Ids(Output).xlsx')

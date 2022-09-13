@@ -1,6 +1,8 @@
 from googleapiclient.discovery import build
 import pandas as pd
 import seaborn as sns
+import openpyxl
+
 
 api_key = 'AIzaSyAV8jYStWCSe6hM1qXk9rHs1Z6km0InkQU'
 #channel_id = 'UCNU_lfiiWBdtULKOw6X0Dig'
@@ -31,7 +33,11 @@ def get_channel_stats(youtube, channel_ids):
 
     return all_data
 
-get_channel_stats(youtube,channel_ids)
+
+channel_Details = get_channel_stats(youtube,channel_ids)
+
+all_data = pd.DataFrame(channel_Details)
+
 
 #def get_videos_ids(youtube,playlist_id):
 
@@ -39,7 +45,7 @@ channel_statistics= get_channel_stats(youtube,channel_ids)
 
 channel_data = pd.DataFrame(channel_statistics)
 
-playlist_id = channel_data.loc[channel_data['channel_Name']== input('Please Provide The Channel Name: '), 'playlist_id'].iloc[0]
+playlist_id = channel_data.loc[channel_data['channel_Name'] == 'Telusko', 'playlist_id'].iloc[0]
 
 def get_videos_ids(youtube, playlist_id):
     request = youtube.playlistItems().list(
@@ -76,7 +82,10 @@ def get_videos_ids(youtube, playlist_id):
 
     return videos_ids
 
-video_ids = get_videos_ids(youtube,playlist_id)
+video_id = get_videos_ids(youtube,playlist_id)
+
+video_ids = pd.DataFrame(video_id)
+
 
 
 
@@ -87,39 +96,33 @@ def get_video_details(youtube, video_ids):
 
     for i in range(0, len(video_ids), 50):
         request = youtube.videos().list(
-            part='snippet,statistics',
-            id=','.join(video_ids[i:i + 50]))
+                        part='snippet,statistics',
+                        id= ','.join(map(str, video_ids[i:i + 50])))
         response = request.execute()
 
+
+
         for video in response['items']:
-            video_stats = dict(Title=video['snippet']['title'],
-                               Publised_date=video['snippet']['publishedAt'],
-                               Views=video['statistics']['viewCount'],
-                               Likes=video['statistics']['likeCount'],
-                               Comments=video['statistics']['commentCount']
-                               )
+                video_stats = dict(Title=video['snippet']['title'],
+                                    Published_date=video['snippet']['publishedAt'],
+                                    Views=video['statistics']['viewCount'],
+                                    Likes=video['statistics']['likeCount'],
+                                    Comments=video['statistics']['commentCount']
+                                    )
 
-            all_video_stats.append(video_stats)
-        try:
-            if response['nextPageToken'] != None:  # if none, it means it reached the last page and break out of it
-                pageToken = 'pageToken=' + response['nextPageToken']
-
-        except:
-            break
+                all_video_stats.append(video_stats)
 
     return all_video_stats
 
-
-
-video_details=get_video_details(youtube, video_ids)
+video_details = get_video_details(youtube, video_ids)
 
 video_data = pd.DataFrame(video_details)
 
-video_data['Publised_date'] = pd.to_datetime(video_data['Publised_date']).dt.date
-video_data['Views'] = pd.to_numeric(video_data['Views'])
-video_data['Likes'] = pd.to_numeric(video_data['Likes'])
-video_data['Comments'] = pd.to_numeric(video_data['Comments'])
 
+video_data.to_csv('Video_Details(Output_Telusko).csv')
 
+all_data.to_csv('Video_Analysis(Output).csv')
+all_data.to_excel('Video_Analysis(Output).xlsx')
 
-video_data.to_csv('Video_Details(channel_Name).csv')
+video_ids.to_csv('Video_Ids(Output).csv')
+video_ids.to_excel('Video_Ids(Output).xlsx')
