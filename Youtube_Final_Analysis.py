@@ -3,11 +3,11 @@ import pandas as pd
 
 
 api_key = 'AIzaSyAV8jYStWCSe6hM1qXk9rHs1Z6km0InkQU'
-#channel_id = 'UCNU_lfiiWBdtULKOw6X0Dig'
+
 channel_ids = ['UCNU_lfiiWBdtULKOw6X0Dig', #Krish Naik
-             'UC59K-uG2A5ogwIrHw4bmlEg', #Telusko
-              'UCkGS_3D0HEzfflFnG0bD24A', #MySirG.com
-             'UCb1GdqUqArXMQ3RS86lqqOw'] #iNeuron Intelligence
+               'UC59K-uG2A5ogwIrHw4bmlEg', #Telusko
+               'UCkGS_3D0HEzfflFnG0bD24A', #MySirG.com
+               'UCb1GdqUqArXMQ3RS86lqqOw'] #iNeuron Intelligence
 
 youtube = build('youtube', 'v3', developerKey=api_key)
 
@@ -34,7 +34,8 @@ def get_channel_stats(youtube, channel_ids):
 Channel_data = get_channel_stats(youtube,channel_ids)
 Ch_data = pd.DataFrame(Channel_data)
 
-#def get_videos_ids(youtube,playlist_id):
+print("Fetching Youtube Channel Analysis Output !!")
+
 
 channel_statistics= get_channel_stats(youtube,channel_ids)
 
@@ -80,6 +81,9 @@ def get_videos_ids(youtube, playlist_id):
 video_ids = get_videos_ids(youtube,playlist_id)
 video_ids_data = pd.DataFrame(video_ids)
 
+print("\n\t\tProcess Completed, Moving Forword !!")
+
+print("\nFetching Youtube Channel Video IDs Of Telusko Output !!!")
 
 #Function To get Video Details
 
@@ -113,13 +117,18 @@ video_data['Views'] = pd.to_numeric(video_data['Views'])
 video_data['Likes'] = pd.to_numeric(video_data['Likes'])
 video_data['Comments'] = pd.to_numeric(video_data['Comments'])
 
+print("\n\t\tProcess Completed, Moving Forword !!")
 
-video_data.to_csv('Video_Details(Output_Telusko).csv')
-video_data.to_excel('Video_Details(Output_Telusko).xlsx')
+print("\nFetching Youtube Channel Details Output !!!")
 
-Ch_data.to_csv('Video_Analysis(Output).csv')
-Ch_data.to_excel('Video_Analysis(Output).xlsx')
+video_data.to_csv('Youtube_Channel_Details_Output_Telusko.csv')
+video_data.to_excel('Youtube_Channel_Details_Output_Telusko.xlsx')
 
-video_ids_data.to_csv('Video_Ids(Output).csv')
-video_ids_data.to_excel('Video_Ids(Output).xlsx')
+print("\n\t\t\t\tCONGRATULATIONS DATA SUCCESSFULLY FETCHED FROM YOUTUBE USING YOUTUBE API !!")
+
+Ch_data.to_csv('Youtube_Channels_Analysis_Output.csv')
+Ch_data.to_excel('Youtube_Channels_Analysis_Output.xlsx')
+
+video_ids_data.to_csv('Youtube_Channel_Video_Ids_Output.csv')
+video_ids_data.to_excel('Youtube_Channel_Video_Ids_Output.xlsx')
 

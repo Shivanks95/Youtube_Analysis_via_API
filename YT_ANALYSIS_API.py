@@ -2,8 +2,7 @@ from googleapiclient.discovery import build
 import pandas as pd
 
 api_key = 'AIzaSyAV8jYStWCSe6hM1qXk9rHs1Z6km0InkQU'
-#channel_id = 'UCNU_lfiiWBdtULKOw6X0Dig'
-channel_ids = ['UCNU_lfiiWBdtULKOw6X0Dig', #Krish Naik
+channel_ids = ['UCNU_lfiiWBdtULKOw6X0Dig', #Krish Nai
              'UC59K-uG2A5ogwIrHw4bmlEg', #Telusko
               'UCkGS_3D0HEzfflFnG0bD24A', #MySirG.com
              'UCb1GdqUqArXMQ3RS86lqqOw'] #iNeuron Intelligence
